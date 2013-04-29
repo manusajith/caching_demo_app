@@ -2,6 +2,7 @@ class ArticlesController < ApplicationController
   before_filter :authenticate_user!
   # GET /articles
   # GET /articles.json
+  caches_action :index, :show
   def index
     @articles = Article.all
 
@@ -45,6 +46,7 @@ class ArticlesController < ApplicationController
 
     respond_to do |format|
       if @article.save
+        expire_action :action => [:index,:show]
         format.html { redirect_to @article, notice: 'Article was successfully created.' }
         format.json { render json: @article, status: :created, location: @article }
       else
@@ -61,6 +63,7 @@ class ArticlesController < ApplicationController
 
     respond_to do |format|
       if @article.update_attributes(params[:article])
+        expire_action :action => [:index,:show]
         format.html { redirect_to @article, notice: 'Article was successfully updated.' }
         format.json { head :no_content }
       else
@@ -75,6 +78,7 @@ class ArticlesController < ApplicationController
   def destroy
     @article = Article.find(params[:id])
     @article.destroy
+    expire_action :action => [:index,:show]
 
     respond_to do |format|
       format.html { redirect_to articles_url }
