@@ -37,4 +37,6 @@ Blog::Application.configure do
   #host
   config.action_controller.default_url_options = {:host => "localhost"}
 
+  #enable caching
+  config.action_controller.perform_caching = true
 end
