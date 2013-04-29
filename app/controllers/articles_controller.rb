@@ -1,5 +1,6 @@
 class ArticlesController < ApplicationController
   before_filter :authenticate_user!
+  caches_page :index, :show
   # GET /articles
   # GET /articles.json
   def index
