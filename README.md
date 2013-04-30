@@ -1,12 +1,12 @@
 #Cache in Rails#
 
-Web cache is a mechanism used for storing web documents such as HTML pages and images to reduce the bandwidth and server load. In Ruby on Rails there are mainly 3 type of caching used namely Page caching, Action Caching and Fragment Caching
+Web cache is a mechanism used for storing web documents such as HTML pages and images to reduce the bandwidth and server load. In Ruby on Rails there are mainly 3 types of caching used namely Page caching, Action Caching and Fragment Caching
 
 #Page Caching#
 
-In page caching whenever a request is sent by a user to the server, the web server would check for the generated cached page and if that exists it would be server. Hence the rails app wont have to process it again thereby saving bandwidth and avoids load on the server. This type of caching is lightning fast, but one main disadvantage of this is that this cant be used for caching every pages. As the requests dont go to the rails app, the authentication and access restrictions using `before_filter` wont work if page caching is used.
+In page caching whenever a request is sent by a user to the server, the web server would check for the generated cached page and if that exists it would be served. Hence the rails app won't have to process it again thereby saving bandwidth and avoids load on the server. This type of caching is lightning fast, but one main disadvantage of this is that this can't be used for caching every page. As the requests don't go to the rails app, the authentication and access restrictions using `before_filter` wont work if page caching is used.
 
-Consider and example where a page relies on the users settings. If we cache this page, another user wont get the customized settings but only be able to get the cached copy of the page.
+Consider an example where a page relies on the user's settings. If we cache this page, another user won't get the customized settings but only be able to get the cached copy of the page.
 
 eg for Page caching:
 
@@ -44,7 +44,7 @@ end
 
 #Action Caching#
 
-In action caching the disadvantages of page caching wont be a problem as all the requests will be sent to the rails app via the web-server  Hence the authentication and access restrictions using the before_filters can be applied before serving a page. Action Caching is done similar to page caching in terms of code.
+In action caching the disadvantages of page caching won't be a problem as all the requests will be sent to the rails app via the web-server  Hence the authentication and access restrictions using the before_filters can be applied before serving a page. Action Caching is done similar to page caching in terms of code.
 eg:
 
 ```
@@ -69,7 +69,7 @@ end
 
 Fragment Caching is mainly used for dynamic pages. In this type of caching fragments of a page can be cached and expired.
 
-Consider and example in which an article is posted to a blog and a reader wants to post a comment to it. Since the article is the same this can be cached while the comments will be dynamic in nature  as he posts his comment that should be displayed. In this case we can use fragment caching for posts
+Consider an example in which an article is posted to a blog and a reader wants to post a comment to it. Since the article is the same this can be cached while the comments will be dynamic in nature  as he posts his comment that should be displayed. In this case we can use fragment caching for posts
 
 eg:
 ```
@@ -88,7 +88,7 @@ Here the article would be cached while the comments wont.
 
 #SQL Caching#
 
-Sql Caching will cache any sql results performed by the Active Records or Data mappers so that if the same query is doesn't hit the database again and thereby decreasing the load time.
+SQL Caching will cache any SQL results performed by the Active Records or Data mappers so that if the same query is doesn't hit the database again and thereby decreasing the load time.
 Eg:
 ```
 class ArticleController < ActionController
@@ -106,7 +106,7 @@ end
 
 #Russian Doll Caching (Rails 4)#
 
-In Russian Doll Caching nested fragment caches are used, so that the caches can be reused again. In Russian Doll caching, if a fragment changes at the top level then only that fragment is expired instead of expiring the whole fragment. Thus we can reuse that cache.
+In Russian Doll Caching nested fragment caches are used, so that the caches can be reused again. In Russian Doll caching, if a fragment change at the top level then only that fragment is expired instead of expiring the whole fragment. Thus we can reuse that cache.
 
 Eg:
 ```
@@ -118,9 +118,9 @@ class Comments < ActiveRecord::Base
   belongs_to :articles, touch: true
 end
 ```
-The `touch` option to `belongs_to` model will make sure that whenever the article changes the cache will be updated for comments too.
+The `touch` option for `belongs_to` model will make sure that whenever the article changes the cache will be updated in the comments too.
 
-To demonstrate the concepts of caching in rails I have made a simple blog hack. Inorder to perform page caching, we needs to add `caches_page` to the the home_controller.rb
+To demonstrate the concepts of caching in rails I have made a simple blog hack. Here the index action in home_controller.rb will render home page if the users aren't signed in else the signed in users will be redirected to the articles index action, where the articles will be displayed. In order to perform page caching, just add `caches_page` to the the home_controller.rb
 
 Eg:
 ```
@@ -155,7 +155,7 @@ class ArticlesController < ApplicationController
 end
 ```
 
-But we need to make sure that cache is expired whenever an article changes. So we also need to add `expire_action` to actions in articles_controller.rb
+But we need to make sure that the cache is expired whenever an article changes. So we also need to add `expire_action` to actions in articles_controller.rb
 
 Eg:
 
@@ -182,9 +182,17 @@ class ArticlesController < ApplicationController
 end
 ```
 
+The index action also uses the  SQL caching mechanism in rails. The `Article.all` will run an Active Record query to fetch all the articles from the database and will create a cache for this query. If the same query is repeated the cached result will be used instead of querying the database again.
+
+
+#What happens when inappropriate caching is used ?#
+
+Consider the case, when page caching was used for the index action instead of action caching in the articles_controller.rb. Whenever a user clicks on the index link, a cached copy if the index page would be rendered to him, even if he is not signed in. Thus the purpose of authentication will be lost if inappropriate caching methods are used for your actions.
+
+
 You can find the whole app at [github](https://github.com/manusajith/caching_demo_app/ "Demo App").
 
-PS: The Demo App was created using scaffolded code and is just meant for demonstrating the caching mechanism in rails. User authentication and UI wasnt give much importance. If someone has spare time and is willing to contribute the pullrequests are always welcome :)
+PS: The Demo App was created using scaffolded code and is just meant for demonstrating the caching mechanism in rails. User authentication and UI wasn't give much importance. If someone has spare time and is willing to contribute the pull-requests are always welcome :)
 
 --
 <br>
