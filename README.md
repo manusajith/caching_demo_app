@@ -190,8 +190,10 @@ The index action also uses the  SQL caching mechanism in rails. The `Article.all
 Consider the case, when page caching was used for the index action instead of action caching in the articles_controller.rb. Whenever a user clicks on the index link, a cached copy if the index page would be rendered to him, even if he is not signed in. Thus the purpose of authentication will be lost if inappropriate caching methods are used for your actions.
 
 
-You can find the whole app at [github](https://github.com/manusajith/caching_demo_app/ "Demo App").
+You can always try out the app in codelearns playground. Just fork the repo. Navigate to the app directory (cd <app_folder>), bundle install to make sure all dependencies are satisfied. Then simply start the server using the rails s command and you will have the app running in your browser.
 
+You can find the whole app at [github](https://github.com/manusajith/caching_demo_app/ "Demo App").
+and is hosted on [heroku](http://caching-example.herokuapp.com/ "Heroku").
 PS: The Demo App was created using scaffolded code and is just meant for demonstrating the caching mechanism in rails. User authentication and UI wasn't give much importance. If someone has spare time and is willing to contribute the pull-requests are always welcome :)
 
 --
